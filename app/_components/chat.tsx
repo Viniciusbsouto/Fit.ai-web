@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport } from "ai";
-import { useQueryStates, parseAsBoolean, parseAsString } from "nuqs";
-import { Sparkles, X, ArrowUp, ArrowDown, LoaderCircle } from "lucide-react";
-import { Streamdown } from "streamdown";
-import { useForm, useWatch } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import Link from "next/link";
-import styles from "./chat.module.css";
-import { env } from "node:process";
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useChat } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
+import { useQueryStates, parseAsBoolean, parseAsString } from 'nuqs';
+import { Sparkles, X, ArrowUp, ArrowDown, LoaderCircle } from 'lucide-react';
+import { Streamdown } from 'streamdown';
+import { useForm, useWatch } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
+import Link from 'next/link';
+import styles from './chat.module.css';
+import { env } from 'node:process';
 
-const SUGGESTED_MESSAGES = ["Monte meu plano de treino"];
+const SUGGESTED_MESSAGES = ['Monte meu plano de treino'];
 
 const chatFormSchema = z.object({
   message: z.string().trim().min(1),
@@ -44,17 +44,17 @@ export function Chat({
 
   const { messages, sendMessage, regenerate, status, error } = useChat({
     transport: new DefaultChatTransport({
-      api: `${env.NEXT_PUBLIC_API_URL}/ai`,
-      credentials: "include",
+      api: `${process.env.NEXT_PUBLIC_API_URL}/ai`,
+      credentials: 'include',
     }),
   });
 
   const form = useForm<ChatFormValues>({
     resolver: zodResolver(chatFormSchema),
-    defaultValues: { message: "" },
+    defaultValues: { message: '' },
   });
 
-  const messageValue = useWatch({ control: form.control, name: "message" });
+  const messageValue = useWatch({ control: form.control, name: 'message' });
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -79,12 +79,12 @@ export function Chat({
     };
 
     updateViewport();
-    viewport.addEventListener("resize", updateViewport);
-    viewport.addEventListener("scroll", updateViewport);
+    viewport.addEventListener('resize', updateViewport);
+    viewport.addEventListener('scroll', updateViewport);
 
     return () => {
-      viewport.removeEventListener("resize", updateViewport);
-      viewport.removeEventListener("scroll", updateViewport);
+      viewport.removeEventListener('resize', updateViewport);
+      viewport.removeEventListener('scroll', updateViewport);
     };
   }, [embedded, chatParams.chat_open]);
 
@@ -92,7 +92,7 @@ export function Chat({
     const input = messageInputRef.current;
     if (!input) return;
 
-    input.style.height = "auto";
+    input.style.height = 'auto';
     const borderHeight = input.offsetHeight - input.clientHeight;
     input.style.height = `${input.scrollHeight + borderHeight}px`;
   }, [messageValue, embedded, chatParams.chat_open]);
@@ -132,7 +132,7 @@ export function Chat({
   useLayoutEffect(() => {
     const container = messagesContainerRef.current;
     if (container && followConversationRef.current) {
-      container.scrollTo({ top: container.scrollHeight, behavior: "instant" });
+      container.scrollTo({ top: container.scrollHeight, behavior: 'instant' });
     }
   }, [messages, status, embedded, chatParams.chat_open]);
 
@@ -146,7 +146,7 @@ export function Chat({
       if (followConversationRef.current) {
         container.scrollTo({
           top: container.scrollHeight,
-          behavior: "instant",
+          behavior: 'instant',
         });
       }
     });
@@ -161,20 +161,20 @@ export function Chat({
     setChatParams({ chat_open: false, chat_initial_message: null });
   };
 
-  const isStreaming = status === "streaming";
-  const isLoading = status === "submitted" || isStreaming;
+  const isStreaming = status === 'streaming';
+  const isLoading = status === 'submitted' || isStreaming;
   const lastMessage = messages[messages.length - 1];
   const hasResponseText =
-    lastMessage?.role === "assistant" &&
-    lastMessage.parts.some((part) => part.type === "text" && part.text.trim());
+    lastMessage?.role === 'assistant' &&
+    lastMessage.parts.some((part) => part.type === 'text' && part.text.trim());
   const isPreparingResponse =
-    status === "submitted" || (isStreaming && !hasResponseText);
+    status === 'submitted' || (isStreaming && !hasResponseText);
 
   const scrollToBottom = () => {
     followConversationRef.current = true;
     setShowScrollToBottom(false);
     const container = messagesContainerRef.current;
-    container?.scrollTo({ top: container.scrollHeight, behavior: "instant" });
+    container?.scrollTo({ top: container.scrollHeight, behavior: 'instant' });
   };
 
   const onSubmit = async (values: ChatFormValues) => {
@@ -264,30 +264,30 @@ export function Chat({
           {messages
             .filter(
               (message) =>
-                message.role !== "assistant" ||
+                message.role !== 'assistant' ||
                 message.parts.some(
-                  (part) => part.type === "text" && part.text.trim(),
+                  (part) => part.type === 'text' && part.text.trim(),
                 ),
             )
             .map((message) => (
               <div
                 key={message.id}
                 className={
-                  message.role === "assistant"
-                    ? "flex min-w-0 flex-col items-start pl-5 pr-10 pt-5 sm:pr-[60px]"
-                    : "flex min-w-0 flex-col items-end pl-10 pr-5 pt-5 sm:pl-[60px]"
+                  message.role === 'assistant'
+                    ? 'flex min-w-0 flex-col items-start pl-5 pr-10 pt-5 sm:pr-[60px]'
+                    : 'flex min-w-0 flex-col items-end pl-10 pr-5 pt-5 sm:pl-[60px]'
                 }
               >
                 <div
                   className={
-                    message.role === "assistant"
-                      ? "min-w-0 max-w-full rounded-xl bg-secondary p-3 [overflow-wrap:anywhere]"
-                      : "min-w-0 max-w-full rounded-xl bg-primary p-3 [overflow-wrap:anywhere]"
+                    message.role === 'assistant'
+                      ? 'min-w-0 max-w-full rounded-xl bg-secondary p-3 [overflow-wrap:anywhere]'
+                      : 'min-w-0 max-w-full rounded-xl bg-primary p-3 [overflow-wrap:anywhere]'
                   }
                 >
-                  {message.role === "assistant" ? (
+                  {message.role === 'assistant' ? (
                     message.parts.map((part, index) =>
-                      part.type === "text" ? (
+                      part.type === 'text' ? (
                         <Streamdown
                           key={index}
                           isAnimating={
@@ -303,12 +303,12 @@ export function Chat({
                   ) : (
                     <p className="whitespace-pre-wrap font-heading text-sm leading-relaxed text-primary-foreground">
                       {message.parts
-                        .filter((part) => part.type === "text")
+                        .filter((part) => part.type === 'text')
                         .map(
                           (part) =>
-                            (part as { type: "text"; text: string }).text,
+                            (part as { type: 'text'; text: string }).text,
                         )
-                        .join("")}
+                        .join('')}
                     </p>
                   )}
                 </div>
@@ -408,7 +408,7 @@ export function Chat({
                       }}
                       onKeyDown={(event) => {
                         if (
-                          event.key !== "Enter" ||
+                          event.key !== 'Enter' ||
                           event.shiftKey ||
                           event.nativeEvent.isComposing ||
                           event.nativeEvent.keyCode === 229 ||
@@ -419,7 +419,7 @@ export function Chat({
 
                         // Touch-first devices keep Return as a newline for virtual keyboards.
                         if (
-                          window.matchMedia("(hover: none), (pointer: coarse)")
+                          window.matchMedia('(hover: none), (pointer: coarse)')
                             .matches
                         ) {
                           return;
@@ -439,8 +439,8 @@ export function Chat({
               type="submit"
               aria-label={
                 isLoading
-                  ? "Aguardando resposta do Coach IA"
-                  : "Enviar mensagem"
+                  ? 'Aguardando resposta do Coach IA'
+                  : 'Enviar mensagem'
               }
               aria-busy={isLoading}
               disabled={!messageValue.trim() || isLoading}
