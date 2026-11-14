@@ -1,6 +1,9 @@
 import { createAuthClient } from "better-auth/react";
-import { env } from "node:process";
 
 export const authClient = createAuthClient({
-  baseURL: env.NEXT_PUBLIC_API_URL,
+  // Next.js only inlines public variables accessed directly through process.env.
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  fetchOptions: {
+    credentials: "include",
+  },
 });
