@@ -6,7 +6,6 @@ import { DefaultChatTransport } from "ai";
 import { useQueryStates, parseAsBoolean, parseAsString } from "nuqs";
 import { Sparkles, X, ArrowUp, ArrowDown, LoaderCircle } from "lucide-react";
 import { Streamdown } from "streamdown";
-import "streamdown/styles.css";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import Link from "next/link";
 import styles from "./chat.module.css";
+import { env } from "node:process";
 
 const SUGGESTED_MESSAGES = ["Monte meu plano de treino"];
 
@@ -44,7 +44,7 @@ export function Chat({
 
   const { messages, sendMessage, regenerate, status, error } = useChat({
     transport: new DefaultChatTransport({
-      api: `${process.env.NEXT_PUBLIC_API_URL}/ai`,
+      api: `${env.NEXT_PUBLIC_API_URL}/ai`,
       credentials: "include",
     }),
   });

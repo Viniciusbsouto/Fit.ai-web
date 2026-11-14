@@ -4,6 +4,7 @@ import { authClient } from "@/app/_lib/auth-client";
 import { headers } from "next/headers";
 import { EmailAuthForm } from "./_components/email-auth-form";
 import { SignInWithGoogle } from "./_components/sign-in-with-google";
+import { env } from "node:process";
 
 export default async function AuthPage() {
   const session = await authClient.getSession({
@@ -39,7 +40,7 @@ export default async function AuthPage() {
           </h1>
 
           <EmailAuthForm />
-          {process.env.GOOGLE_OAUTH_ENABLED === "true" && <SignInWithGoogle />}
+          {env.GOOGLE_OAUTH_ENABLED === "true" && <SignInWithGoogle />}
         </div>
 
         <p className="font-heading text-xs leading-[1.4] text-primary-foreground/70">
